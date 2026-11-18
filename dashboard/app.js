@@ -154,14 +154,20 @@
     var count = state.tab === 'board' ? rows().length + ' rows shown'
       : state.tab === 'live' ? DATA.live.length + ' live-token protocols'
       : DATA.product_size + ' products set aside';
-    return el('div', { class: 'controls' },
-      el('div', { class: 'field' }, el('label', { for: 'q', text: 'Search' }), search),
-      el('div', { class: 'field' }, el('label', { for: 'category', text: 'Category' }), catSelect),
-      el('div', { class: 'field' }, el('label', { for: 'chain', text: 'Chain' }), chainSelect),
+    var fields = [
       el('div', { class: 'field' }, el('span', { class: 'sub', text: 'View' }),
-        el('div', { class: 'tabs' }, tabButton('board', 'Pre-token board'), tabButton('live', 'Live tokens'), tabButton('products', 'Set aside'))),
-      el('span', { class: 'count', text: count })
-    );
+        el('div', { class: 'tabs' }, tabButton('board', 'Pre-token board'), tabButton('live', 'Live tokens'), tabButton('products', 'Set aside')))
+    ];
+    // The search and filters act on the board alone; on the set-aside views they step out of the way.
+    if (state.tab === 'board') {
+      fields.unshift(
+        el('div', { class: 'field' }, el('label', { for: 'q', text: 'Search' }), search),
+        el('div', { class: 'field' }, el('label', { for: 'category', text: 'Category' }), catSelect),
+        el('div', { class: 'field' }, el('label', { for: 'chain', text: 'Chain' }), chainSelect)
+      );
+    }
+    fields.push(el('span', { class: 'count', text: count }));
+    return el('div', { class: 'controls' }, fields);
   }
 
   function sortHeader(key, label) {

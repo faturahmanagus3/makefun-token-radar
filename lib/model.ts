@@ -460,7 +460,11 @@ function secondAction(book: Playbook, p: SnapshotProtocol, capital: number): str
 /** One farm step as a single string: the action, then its cost and its time. */
 function step(action: string, cost: string, time: string): string {
   let s = `${action} Cost: ${cost}. Time: ${time}.`;
-  if (s.length > 600) s = `${s.slice(0, 596)}...`;
+  if (s.length > 600) {
+    // Cut at a word boundary, never mid-word, and stay inside the gate's 600 characters.
+    const cut = s.slice(0, 596);
+    s = `${cut.slice(0, cut.lastIndexOf(' '))}...`;
+  }
   if (s.length < 20) s = `${s} Keep the position open and check the protocol's own page.`;
   return s;
 }
